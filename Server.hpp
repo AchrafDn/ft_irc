@@ -31,8 +31,8 @@ private:
 public:
     Server(int Port, std::string Password) : port(Port), password(Password) {}
 
-    std::string get_servername() { return serverName;}
-    void set_time(std::string time) { creationTime = time;}
+    std::string get_servername() { return serverName; }
+    void set_time(std::string time) { creationTime = time; }
 
     void execution();
     void SerSocket();
@@ -41,6 +41,11 @@ public:
     void CreateClient(int fd);
     void RemoveClient(int fd);
     void RegisterClient(std::string input, int fd);
+    void SendMessage(int fd, std::string message);
+
+    /*COMMANDS*/
+    void pass_cmd(std::istringstream &iss, int fd);
+    void handle_pong(int fd);
 };
 
 #endif
