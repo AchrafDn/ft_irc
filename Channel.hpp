@@ -30,7 +30,7 @@ private:
 public:
     Channel();
     Channel(std::string name);
-    Channel(std::string name, std::string mode = "", std::string topic, std::string key, Client *creator);
+    Channel(std::string name, std::string mode , std::string topic, std::string key, Client *creator);
     virtual ~Channel();
 
     /*         GETTERS           */

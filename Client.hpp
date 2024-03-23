@@ -3,7 +3,9 @@
 
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Channel.hpp"
 
+class Channel;
 class Client;
 class Server;
 

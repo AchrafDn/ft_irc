@@ -5,9 +5,6 @@
 
 void Server::CreateClient(int fd)
 {
-
-    /*in this part i should ask the client for his name and nickname*/
-    /*Parssing the nickname and name and set them to the client object*/
     Client *a = new Client(fd, 0);
     clients.insert(std::pair<int, Client>(fd, *a));
 
@@ -19,10 +16,8 @@ void Server::CreateClient(int fd)
 
     fds.push_back(fd_poll);
 
-    // CollectClientData(fd);
     std::cout << "Creation of client finished" << std::endl;
-    std::string msg = "Please enter your password: \r\n";
-    send(fd, msg.c_str(), msg.size(), 0);
+    SendMessage(fd, "Please enter your password: \r\n");
 }
 
 void Server::AcceptClient()
@@ -91,26 +86,43 @@ void Server::RemoveClient(int fd)
     }
 }
 
+void Server::SendMessage(int fd, std::string message)
+{
+    send(fd, message.c_str(), message.size(), 0);
+}
+
+void Server::pass_cmd(std::istringstream &iss, int fd)
+{
+    std::string input;
+    iss >> input;
+    if (iss.eof())
+        SendMessage(fd, "Client PASS :Not enough parameters\r\n");
+    else if (password == input)
+    {
+        iss >> input;
+        if (!iss.eof() || input != password)
+        {
+            SendMessage(fd, "Client :Password incorrect\r\n");
+        }
+        else
+        {
+            clients[fd].set_registered(1);
+            SendMessage(fd, "Please enter your NICK:\r\n");
+        }
+    }
+    else
+        SendMessage(fd, "Client :Password incorrect\r\n");
+}
+
 void Server::RegisterClient(std::string buffer, int fd)
 {
     std::istringstream iss((std::string(buffer)));
     std::string input;
     std::string message;
     iss >> input;
-    if ((clients[fd].get_registered() == 0) && (input == "PASS"))
+    if (input == "PASS")
     {
-        iss >> input;
-        if ((password) == input)
-        {
-            clients[fd].set_registered(1);
-            message = "Please enter your NICK:\r\n";
-            send(fd, message.c_str(), message.size(), 0);
-        }
-        else
-        {
-            message = "Wrong password\r\n";
-            send(fd, message.c_str(), message.size(), 0);
-        }
+        pass_cmd(iss, fd);
     }
     else if (clients[fd].get_registered() == 1 && input == "NICK")
     {
@@ -132,20 +144,19 @@ void Server::RegisterClient(std::string buffer, int fd)
         clients[fd].set_real_name(input);
         clients[fd].set_registered(3);
 
-        message = ":HALAL_TINDER 001 :Welcome Welcome to the HALAL_TINDER Network, " + clients[fd].get_nick() + "[!" + clients[fd].get_user() + "@tinderhalal.com]\r\n";
+        message = ":HALAL_TINDER 001 " + clients[fd].get_nick() + " :Welcome to the HALAL_TINDER Network, " + clients[fd].get_nick() + "[!" + clients[fd].get_user() + "@tinderhalal.com]\r\n";
 
         send(fd, message.c_str(), message.size(), 0);
 
-        message = ":HALAL_TINDER 002 :Your Your host is HALAL_TINDER, running version 2.0\r\n";
+        message = ":HALAL_TINDER 002 " + clients[fd].get_nick() + " :Your host is HALAL_TINDER, running version 2.0\r\n";
 
         send(fd, message.c_str(), message.size(), 0);
 
-        message = ":HALAL_TINDER 003 :This This server was created " + creationTime +"\r\n";
+        message = ":HALAL_TINDER 003 " + clients[fd].get_nick() + " :This server was created " + creationTime + "\r\n";
 
         send(fd, message.c_str(), message.size(), 0);
 
-        
-        message = ":HALAL_TINDER 004 "+ clients[fd].get_nick() +" HALAL_TINDER 2.0 \r\n";
+        message = ":HALAL_TINDER 004 " + clients[fd].get_nick() + " :HALAL_TINDER 2.0 \r\n";
 
         send(fd, message.c_str(), message.size(), 0);
     }
@@ -153,7 +164,6 @@ void Server::RegisterClient(std::string buffer, int fd)
 
 void Server::ReceiveData(int fd)
 {
-
     char buffer[1000];
 
     int bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
@@ -161,20 +171,22 @@ void Server::ReceiveData(int fd)
     if (bytes <= 0)
     {
         if (bytes == -1)
-        {
             throw std::string("read() failled reading data received from client");
-        }
         else
             RemoveClient(fd);
         std::cout << "Client " << fd << " Disconnected" << std::endl;
     }
     else
     {
+        std::vector<std::string> cmd;
+        std::istringstream iss(buffer);
+        std::string input;
+        while (iss >> input)
+            cmd.push_back(input);
         if (std::string(buffer).find("PING"))
         {
-            std::string message = ":HALAL_TINDER PONG\r\n";
-
-        send(fd, message.c_str(), message.size(), 0);
+            std::string message = "PONG HALLAL_TINDER\r\n";
+            send(fd, message.c_str(), message.size(), 0);
         }
         if (clients[fd].get_registered() < 3)
             RegisterClient(std::string(buffer), fd);
@@ -183,8 +195,16 @@ void Server::ReceiveData(int fd)
     }
 }
 
+void Server::handle_pong(int fd)
+{
+    std::string sender = clients[fd].get_name();
+    std::string message = "PONG";
+    SendMessage(fd, message);
+}
+
 void Server::execution()
 {
+
     SerSocket();
     std::cout << "creation of server socket is done wainting for inconming client connection" << std::endl;
 
