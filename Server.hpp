@@ -2,6 +2,7 @@
 #define SERVER_HPP
 
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
 #include <map>
 #include <vector>

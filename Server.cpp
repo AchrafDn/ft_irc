@@ -17,7 +17,7 @@ void Server::CreateClient(int fd)
     fds.push_back(fd_poll);
 
     std::cout << "Creation of client finished" << std::endl;
-    SendMessage(fd, "Please enter your password: \r\n"); 
+    SendMessage(fd, "Please enter your password: \r\n");
 }
 
 void Server::AcceptClient()
@@ -164,7 +164,6 @@ void Server::RegisterClient(std::string buffer, int fd)
 
 void Server::ReceiveData(int fd)
 {
-
     char buffer[1000];
 
     int bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
@@ -179,6 +178,11 @@ void Server::ReceiveData(int fd)
     }
     else
     {
+        std::vector<std::string> cmd;
+        std::istringstream iss(buffer);
+        std::string input;
+        while (iss >> input)
+            cmd.push_back(input);
         if (std::string(buffer).find("PING"))
         {
             std::string message = "PONG HALLAL_TINDER\r\n";
@@ -198,7 +202,8 @@ void Server::handle_pong(int fd)
     SendMessage(fd, message);
 }
 
-void Server::execution(){
+void Server::execution()
+{
 
     SerSocket();
     std::cout << "creation of server socket is done wainting for inconming client connection" << std::endl;
