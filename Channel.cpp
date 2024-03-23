@@ -114,7 +114,7 @@ void Channel::SetTopic(std::string &topic, Client *setter)
     _topic = topic;
     _topic_setter = setter;
     time_t rn = time(0);
-    _topic_time = (intmax_t)rn;
+    _topic_time = (long)rn;
 }
 
 void Channel::UnsetTopic(Client *setter)
@@ -122,7 +122,8 @@ void Channel::UnsetTopic(Client *setter)
     _topic = "";
     _topic_setter = setter;
     time_t rn = time(0);
-    _topic_time = (intmax_t)rn;}
+    _topic_time = (long)rn;
+}
 
 
 void Channel::SetKey(std::string &key)

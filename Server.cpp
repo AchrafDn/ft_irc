@@ -132,15 +132,15 @@ void Server::RegisterClient(std::string buffer, int fd)
         clients[fd].set_real_name(input);
         clients[fd].set_registered(3);
 
-        message = ":HALAL_TINDER 001 :Welcome to the HALAL_TINDER Network, " + clients[fd].get_nick() + "[!" + clients[fd].get_user() + "@tinderhalal.com]\r\n";
+        message = ":HALAL_TINDER 001 :Welcome Welcome to the HALAL_TINDER Network, " + clients[fd].get_nick() + "[!" + clients[fd].get_user() + "@tinderhalal.com]\r\n";
 
         send(fd, message.c_str(), message.size(), 0);
 
-        message = ":HALAL_TINDER 002 :Your host is HALAL_TINDER, running version 2.0\r\n";
+        message = ":HALAL_TINDER 002 :Your Your host is HALAL_TINDER, running version 2.0\r\n";
 
         send(fd, message.c_str(), message.size(), 0);
 
-        message = ":HALAL_TINDER 003 :This server was created " + creationTime +"\r\n";
+        message = ":HALAL_TINDER 003 :This This server was created " + creationTime +"\r\n";
 
         send(fd, message.c_str(), message.size(), 0);
 

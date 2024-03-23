@@ -2,9 +2,13 @@
 
 #define MAX_NAME_LENGTH 50
 #define MAX_USER_LIMIT 10
+#define MAX_CHANNEL_LIMIT 10
 
 #include "Server.hpp"
 #include "Client.hpp"
+
+class Server;
+class Client;
 
 class Channel
 {

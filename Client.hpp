@@ -4,6 +4,9 @@
 #include "Server.hpp"
 #include "Client.hpp"
 
+class Client;
+class Server;
+
 class Client{
     private:
         int fd;
@@ -12,6 +15,7 @@ class Client{
         std::string user;
         std::string real_name;
         int registered;
+        Channel *last_channel;
 
     public:
         Client() : fd(0), name(""), nick(""), registered(0){}
@@ -24,6 +28,7 @@ class Client{
         void    set_real_name(std::string _real_name) {real_name = _real_name;}
         void    set_registered(int num) {registered = num;}
         void    set_user(std::string _user) {user = _user;}
+        void    set_last_channel(Channel *channel) {last_channel = channel;}
 
         int    get_fd() {return fd;}
         int    get_registered() {return registered;}

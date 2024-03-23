@@ -2,6 +2,7 @@
 #define SERVER_HPP
 
 #include <iostream>
+#include <iostream>
 #include <cstdlib>
 #include <map>
 #include <vector>
@@ -13,8 +14,14 @@
 #include <arpa/inet.h>
 #include <poll.h>
 #include <csignal>
+#include <sstream>
 
 #include "Client.hpp"
+#include "Channel.hpp"
+
+// added forward declaration
+class Channel;
+class Client;
 
 class Server
 {
@@ -27,6 +34,8 @@ private:
 
     std::vector<struct pollfd> fds;
     std::map<int, Client> clients;
+    //added channel vector
+    std::vector<Channel *> channels;
 
 public:
     Server(int Port, std::string Password) : port(Port), password(Password) {}
@@ -41,6 +50,12 @@ public:
     void CreateClient(int fd);
     void RemoveClient(int fd);
     void RegisterClient(std::string input, int fd);
+    // added channel methods
+    void AddChannel(Channel *channel);
+    void RemoveChannel(Channel *channel);
+    void CreateChannel(std::vector<std::string> command, Client *creator);
+    void Join(std::vector<std::string> command, Client *client);
+
 };
 
 #endif
