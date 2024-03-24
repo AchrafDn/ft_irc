@@ -99,7 +99,7 @@ bool const &Channel::HasKey() const
     return _haskey;
 }
 
-std::string const &Channel::GetCreationTime() const
+std::string const Channel::GetCreationTime() const
 {
     std::ostringstream os;
     os << std::fixed << _creationtime;
@@ -237,10 +237,7 @@ std::string Channel::GetUsersList()
     std::string users;
     for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
     {
-        if (IsChannelOperator(*it))
-            users += "@";
-        else
-            users += (*it)->get_nick() + " ";
+        users += (*it)->get_nick() + " ";
     }
     return users;
 }

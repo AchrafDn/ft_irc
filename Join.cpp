@@ -38,25 +38,37 @@ void Server::Join(std::vector<std::string> command, Client *client)
     {
         if ((*it)->GetName() == channel_name)
         {
-            if (key != "")
+            // found the channel
+            if (!((*it)->IsInviteOnly() && !(*it)->IsInvited(client)))
             {
-                if ((*it)->GetKey() == key)
+                if (key != "")
                 {
-                    (*it)->AddUser(client);
-                    client->set_last_channel(*it);
+                    if ((*it)->GetKey() == key)
+                    {
+                        (*it)->AddUser(client);
+                        client->set_last_channel(*it);
+                    }
+                    else
+                    {
+                        std::string message = "Wrong key\r\n";
+                        send(client->get_fd(), message.c_str(), message.size(), 0);
+                    }
                 }
                 else
                 {
-                    std::string message = "Wrong key\r\n";
-                    send(client->get_fd(), message.c_str(), message.size(), 0);
+                    (*it)->AddUser(client);
+                    client->set_last_channel(*it);
+                    std::cout << channels.back()->GetUsersList() << std::endl;
+
                 }
+                break;
             }
-            else
-            {
-                (*it)->AddUser(client);
-                client->set_last_channel(*it);
-            }
-            break;
         }
+    }
+    if (client->get_last_channel() == NULL)
+    {
+        CreateChannel(command, client);
+        client->set_last_channel(channels.back());
+        std::cout << channels.back()->GetUsersList() << std::endl;
     }
 }

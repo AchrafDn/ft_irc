@@ -191,7 +191,10 @@ void Server::ReceiveData(int fd)
         if (clients[fd].get_registered() < 3)
             RegisterClient(std::string(buffer), fd);
         else
-            std::cout << buffer;
+        {
+            if (cmd[0] == "JOIN" || cmd[0] == "join")
+                Join(cmd, &clients[fd]);
+        }
     }
 }
 

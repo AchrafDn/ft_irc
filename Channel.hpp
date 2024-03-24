@@ -43,7 +43,7 @@ public:
     size_t GetClientCount();
     bool const &HasTopic() const;
     bool const &HasKey() const;
-    std::string const &GetCreationTime() const;
+    std::string const GetCreationTime() const;
 
     /*         SETTERS           */
 

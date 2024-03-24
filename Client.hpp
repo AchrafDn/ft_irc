@@ -20,9 +20,9 @@ class Client{
         Channel *last_channel;
 
     public:
-        Client() : fd(0), name(""), nick(""), registered(0){}
-        Client(int _fd, int _registered) : fd(_fd), name(""), nick(""), registered(_registered){}
-        Client(int _fd, std::string _name, std::string _nick) : fd(_fd), name(_name), nick(_nick){};
+        Client() : fd(0), name(""), nick(""), registered(0), last_channel(NULL){}
+        Client(int _fd, int _registered) : fd(_fd), name(""), nick(""), registered(_registered), last_channel(NULL){}
+        Client(int _fd, std::string _name, std::string _nick) : fd(_fd), name(_name), nick(_nick), last_channel(NULL){};
         
         void    set_fd(int _fd) {fd = _fd;}
         void    set_nick(std::string _nick) {nick = _nick;}
@@ -38,6 +38,7 @@ class Client{
         std::string    get_name() {return name;}
         std::string    get_real_name() {return real_name;}
         std::string    get_user() {return user;}
+        Channel    *get_last_channel() {return last_channel;}
 
 };
 
