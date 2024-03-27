@@ -61,8 +61,11 @@ public:
     void AddChannel(Channel *channel);
     void RemoveChannel(Channel *channel);
     void CreateChannel(std::vector<std::string> command, Client *creator);
-    void Join(std::vector<std::string> command, Client *client);
 
+    // command methods
+    
+    void Join(std::vector<std::string> command, Client *client);
+    void Mode(std::vector<std::string> command, Client *client);
 };
 
 #endif

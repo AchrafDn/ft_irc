@@ -53,6 +53,8 @@ public:
     void UnsetKey();
     void SetMode(std::string &mode);
     void SetLimit(size_t limit);
+    void SetInviteOnly(bool set);
+    void SetOpsChangeTopic(bool set);
 
     /*         CHECKERS          */
 
@@ -64,8 +66,9 @@ public:
     /*         METHODS           */
 
     void RemoveUser(Client *client);
+    bool AddOperator(std::string nick);
+    bool RemoveOperator(std::string nick);
     void AddUser(Client *client);
-    void AddOperator(Client *client);
     void InviteUser(Client *client);
     std::string GetUsersList();
 

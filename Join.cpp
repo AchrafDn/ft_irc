@@ -31,44 +31,57 @@ void Server::RemoveChannel(Channel *channel)
 
 void Server::Join(std::vector<std::string> command, Client *client)
 {
+    if (command.size() > 3)
+    {
+        //need to send
+        return;
+    }
     std::string channel_name = command[1];
     std::string key = command[2];
 
-    for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+    if (channel_name.c_str()[0] == '#')
     {
-        if ((*it)->GetName() == channel_name)
+        for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
         {
-            // found the channel
-            if (!((*it)->IsInviteOnly() && !(*it)->IsInvited(client)))
+            if ((*it)->GetName() == channel_name)
             {
-                if (key != "")
+                // found the channel
+                if (!((*it)->IsInviteOnly() && !(*it)->IsInvited(client)))
                 {
-                    if ((*it)->GetKey() == key)
+                    if (key != "")
                     {
-                        (*it)->AddUser(client);
-                        client->set_last_channel(*it);
+                        if ((*it)->GetKey() == key)
+                        {
+                            (*it)->AddUser(client);
+                            client->set_last_channel(*it);
+                        }
+                        else
+                        {
+                            std::string message = "Wrong key\r\n";
+                            send(client->get_fd(), message.c_str(), message.size(), 0);
+                        }
                     }
                     else
                     {
-                        std::string message = "Wrong key\r\n";
-                        send(client->get_fd(), message.c_str(), message.size(), 0);
-                    }
-                }
-                else
-                {
-                    (*it)->AddUser(client);
-                    client->set_last_channel(*it);
-                    std::cout << channels.back()->GetUsersList() << std::endl;
+                        (*it)->AddUser(client);
+                        client->set_last_channel(*it);
+                        std::cout << channels.back()->GetUsersList() << std::endl;
 
+                    }
+                    break;
                 }
-                break;
             }
         }
+        if (client->get_last_channel() == NULL)
+        {
+            CreateChannel(command, client);
+            client->set_last_channel(channels.back());
+            std::cout << channels.back()->GetUsersList() << std::endl;
+        }
     }
-    if (client->get_last_channel() == NULL)
+    else
     {
-        CreateChannel(command, client);
-        client->set_last_channel(channels.back());
-        std::cout << channels.back()->GetUsersList() << std::endl;
+        std::string message = "Invalid channel name\r\n";
+        send(client->get_fd(), message.c_str(), message.size(), 0);
     }
 }

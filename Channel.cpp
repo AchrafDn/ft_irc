@@ -151,6 +151,34 @@ void Channel::SetLimit(size_t limit)
         _limit = limit;
 }
 
+void Channel::SetInviteOnly(bool set)
+{
+    if (set)
+    {
+        std::cout << "i set called" << std::endl;
+        _mode += "i";
+    }
+    else
+    {
+        std::cout << "i unset called" << std::endl;
+        _mode.erase(std::remove(_mode.begin(), _mode.end(), 'i'), _mode.end());
+    }
+}
+
+void Channel::SetOpsChangeTopic(bool set)
+{
+    if (set)
+    {
+        std::cout << "t set called" << std::endl;
+        _mode += "t";
+    }
+    else
+    {
+        std::cout << "t unset called" << std::endl;
+        _mode.erase(std::remove(_mode.begin(), _mode.end(), 't'), _mode.end());
+    }
+}
+
     /*         CHECKERS          */
 
 int Channel::IsChannelOperator(Client *client)
@@ -221,10 +249,32 @@ void Channel::RemoveUser(Client *client)
     }
 }
 
-void Channel::AddOperator(Client *client)
+ bool Channel::AddOperator(std::string nick)
 {
-    _operators.push_back(client);
+    for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+    {
+        if ((*it)->get_nick() == nick)
+        {
+            _operators.push_back(*it);
+            return true;
+        }
+    }
+    return false;
 }
+
+bool Channel::RemoveOperator(std::string nick)
+{
+    for (std::vector<Client *>::iterator it = _operators.begin(); it != _operators.end(); it++)
+    {
+        if ((*it)->get_nick() == nick)
+        {
+            _operators.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void Channel::InviteUser(Client *client)
 {
