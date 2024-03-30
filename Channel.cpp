@@ -107,6 +107,34 @@ std::string const Channel::GetCreationTime() const
     return str;
 }
 
+std::vector<Client *> Channel::GetClients()
+{
+    return _clients;
+}
+
+std::string Channel::GetTopicSetAt() const
+{
+    std::ostringstream os;
+    os << std::fixed << _topic_time;
+    std::string str = os.str();
+    return str;
+}
+
+std::string Channel::GetTopicSetBy() const
+{
+    return _topic_setter->get_nick();
+}
+
+std::string Channel::GetClientByNick(std::string nick)
+{
+    for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+    {
+        if ((*it)->get_nick() == nick)
+            return (*it)->get_nick();
+    }
+    return "";
+}
+
     /*         SETTERS           */
 
 void Channel::SetTopic(std::string &topic, Client *setter)
@@ -218,6 +246,13 @@ bool Channel::IsInChannel(Client *client)
     return false;
 }
 
+bool Channel::IsTopicChangable()
+{
+    if (_mode.find("t") != std::string::npos)
+        return false;
+    return true;
+}
+
     /*         METHODS           */
 
 void Channel::AddUser(Client *client)
@@ -287,8 +322,20 @@ std::string Channel::GetUsersList()
     std::string users;
     for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
     {
-        users += (*it)->get_nick() + " ";
+        if (IsChannelOperator(*it))
+            users += "@";
+            users += (*it)->get_nick();
+        if (it + 1 != _clients.end())
+            users += " ";
     }
     return users;
+}
+
+void Channel::SendChannelMessage(std::string message)
+{
+    for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+    {
+        send((*it)->get_fd(), message.c_str(), message.size(), 0);
+    }
 }
 

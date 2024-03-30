@@ -184,13 +184,25 @@ void Server::ReceiveData(int fd)
             RegisterClient(std::string(buffer), fd);
         else
         {
-            // std::cout << buffer << std::endl;
+            std::cout << buffer << std::endl;
             if (cmd[0] == "join" || cmd[0] == "JOIN")
                 Join(cmd, &clients[fd]);
             else if (cmd[0] == "mode" || cmd[0] == "MODE")
+            {
+                for (std::vector<std::string>::iterator it = cmd.begin(); it != cmd.end(); ++it)
+                    std::cout << " | " << *it;
                 Mode(cmd, &clients[fd]);
+            }
+            else if (cmd[0] == "part" || cmd[0] == "PART")
+                Part(cmd, &clients[fd]);
+            else if (cmd[0] == "kick" || cmd[0] == "KICK")
+                Kick(cmd, &clients[fd]);
+            else if (cmd[0] == "topic" || cmd[0] == "TOPIC")
+                Topic(cmd, &clients[fd]);
             else
-                std::cout << buffer << std::endl;
+            {
+                //printing vector
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 CC = c++
-Cflags = -Wall -Wextra -Werror -std=c++98
-Cfiles = main.cpp Server.cpp Channel.cpp Join.cpp Mode.cpp
+Cflags = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
+Cfiles = main.cpp Server.cpp Channel.cpp Join.cpp Mode.cpp Part.cpp Kick.cpp Topic.cpp
 # Cfiles = Test.cpp
 
 

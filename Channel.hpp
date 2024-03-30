@@ -40,10 +40,14 @@ public:
     std::string const &GetMode() const;
     std::string const &GetTopic() const;
     std::string const &GetKey() const;
+    std::vector<Client *> GetClients();
     size_t GetClientCount();
     bool const &HasTopic() const;
     bool const &HasKey() const;
     std::string const GetCreationTime() const;
+    std::string GetTopicSetAt() const;
+    std::string GetTopicSetBy() const;
+    std::string GetClientByNick(std::string nick);
 
     /*         SETTERS           */
 
@@ -62,6 +66,7 @@ public:
     bool IsInvited(Client *client);
     bool IsInviteOnly();
     bool IsInChannel(Client *client);
+    bool IsTopicChangable();
 
     /*         METHODS           */
 
@@ -70,6 +75,8 @@ public:
     bool RemoveOperator(std::string nick);
     void AddUser(Client *client);
     void InviteUser(Client *client);
+    void SendChannelMessage(std::string message);
+
     std::string GetUsersList();
 
 };

@@ -66,6 +66,9 @@ public:
     
     void Join(std::vector<std::string> command, Client *client);
     void Mode(std::vector<std::string> command, Client *client);
+    void Part(std::vector<std::string> command, Client *client);
+    void Kick(std::vector<std::string> command, Client *client);
+    void Topic(std::vector<std::string> command, Client *client);
 };
 
 #endif
